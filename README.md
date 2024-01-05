@@ -29,6 +29,8 @@ The application architecture revolves around a user-friendly single-page web int
 ## 🎆Docker compose Metamodel
 <img src="imgs/composeMetamodel.png" width="600">
 
+#Transformation
+
 # Conclusion
 In summary, this application seamlessly integrates an easy-to-use web interface with a robust backend, providing users with an easy solution to generate Docker Compose files from Maven configuration files.
 This application utilizes a model-driven engineering (MDE) process that includes the creation of a Compose metamodel and a configuration file metamodel, and utilizes Epsilon for model-to-model and model-to-text translation.
