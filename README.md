@@ -36,6 +36,7 @@ In order to achieve our desired outcomes using the model-driven approach, we nee
 ## Model-to-Model Transformation
 
 It is the transformation that occurs from the config file metamodel to the docker compose metamodel, done using ETL (Epsilon Transformation Language), it takes as output the metamodels, the ETL transformation rules and the config file model instance. 
+
 Using Epsilon Playground, we got the following Target Model:
 <img src="imgs/m2m.jpg" width="900">
 
