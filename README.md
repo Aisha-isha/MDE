@@ -67,7 +67,50 @@ The transformation that takes us from the compose metamodel to the Docker compos
 
 It takes as input the target model generated from the ETL transfomration as a flexmi file:
 
-```code
+```?nsuri: compose
+
+compose:
+    version: "3"
+    services:
+        name: "backend"
+        image: "openjdk:17-jdk-alpine"
+        container_name: "backend_container"
+        networks: "springboot-net"
+        command: "['java','-jar','/app.jar']"
+        working_dir: "working_dir"
+        Port:
+            host: "8080"
+            container: "8080"
+        Volume:
+            name: "./path/app"
+            container: "./path/to/container"
+        Environment:
+            name: "SPRING_DATASOURCE_URL"
+            value: "url"
+        Environment:
+            name: "SPRING_DATASOURCE_USERNAME"
+            value: "user"
+        Environment:
+            name: "SPRING_DATASOURCE_PWD"
+            value: "pwd"
+    services:
+        name: "database"
+        image: "mysql:8.0"
+        container_name: "database_container"
+        networks: "springboot-net"
+       
+        Port:
+            host: "3360"
+            container: "3360"
+        Environment:
+            name: "sql_user"
+            value: "user"
+        Environment:
+            name: "sql_pwd"
+            value: "pwd"
+    Network:
+        name: "springboot-net"
+        driver: "bridge"
 ```
 
 Its output is the final Docker compose file as shown below:
