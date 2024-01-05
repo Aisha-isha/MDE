@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class ParserService {
@@ -99,10 +102,7 @@ public class ParserService {
     	} catch (IOException e) {
     	    e.printStackTrace();
     	}
-    	
-
-
-
+    	deleteFile(filePath);
     }
     public void parseDockerFile(int numFiles) {
         List<String> images = new ArrayList<>();
@@ -153,6 +153,7 @@ public class ParserService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            deleteFile(filePathDocker);
         }
     }
     public void confFile() {
@@ -193,6 +194,16 @@ public class ParserService {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error creating 'config.txt' file.");
+        }
+    }
+    private void deleteFile(String filePath) {
+        try {
+            Path path = Paths.get(filePath);
+            Files.delete(path);
+            System.out.println("File deleted successfully: " + filePath);
+        } catch (IOException e) {
+            System.out.println("Error deleting the file: " + filePath);
+            e.printStackTrace();
         }
     }
 
