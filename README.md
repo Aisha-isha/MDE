@@ -20,9 +20,10 @@ Config2Compose, a fairly easy to use web interface where the user can upload the
 Our solution is a single-page web application developed using the java language with the spring boot framework and simple HTML and CSS for the front-end.
 
 # Metamodels
-## Configuration File Metamodel
+## 🎆Configuration File Metamodel
 <img src="imgs/configMetamodel.png" width="600">
-## Docker compose Metamodel
+
+## 🎆Docker compose Metamodel
 <img src="imgs/composeMetamodel.png" width="600">
 
 
