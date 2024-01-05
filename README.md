@@ -13,4 +13,9 @@ Tired of writing your docker compose files by hand? Tired of having to look up t
 
 ## Our Solution
 
-Config2Compose, a fairly easy to use web interface where the user can upload their maven config files (application.properties + dockerfile), and the system; a model-driven approach, transforms these files into their corresponding Dockerfile to simplify the orchestration process. \(^o^)/**
+Config2Compose, a fairly easy to use web interface where the user can upload their maven config files (application.properties + dockerfiles), and the system; a model-driven approach, transforms these files into their corresponding Docker compose file to simplify the orchestration process. \(^o^)/**
+
+## Architecture of our Solution
+
+Our solution is a single-page web application developed using the java language with the spring boot framework and simple HTML and CSS for the front-end.
+
