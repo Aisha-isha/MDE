@@ -22,21 +22,26 @@ The application architecture revolves around a user-friendly single-page web int
 
 <img src="imgs/index.png" width="600">
 
-## Metamodels
-# 🎆Configuration File Metamodel
+# Metamodels
+## 🎆Configuration File Metamodel
 <img src="imgs/configMetamodel.png" width="600">
 
-# 🎆Docker compose Metamodel
+## 🎆Docker compose Metamodel
 <img src="imgs/composeMetamodel.png" width="600">
 
-## Transformation
+# Transformation
 In order to achieve our desired outcomes using the model-driven approach, we need to make configure the Model-to-Model and Model-to-Text transformations that will transfrom our metamodels from config files to Docker compose file.
 
-# Model-to-Model Transformation
+## Model-to-Model Transformation
 
 It is the transformation that occurs from the config file metamodel to the docker compose metamodel, done using ETL (Epsilon Transformation Language), it takes as output the metamodels, the ETL transformation rules and the config file model instance. 
 Using Epsilon Playground, we got the following Target Model:
 <img src="imgs/m2m.jpg" width="900">
+
+## Model-to-Text Transformation
+
+The transformation that takes us from the Docker compose file to the Docker compose file as in text. It was done using EGL (Epsilon Generation Language). Its output is the final Docker compose file as shown below:
+<img src="imgs/m2t.jpg" width="700">
 
 ## Conclusion
 In summary, this application seamlessly integrates an easy-to-use web interface with a robust backend, providing users with an easy solution to generate Docker Compose files from Maven configuration files.
