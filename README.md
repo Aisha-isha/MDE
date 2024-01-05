@@ -21,6 +21,7 @@ The application architecture revolves around a user-friendly single-page web int
 
 
 <img src="imgs/index.png" width="600">
+<img src="imgs/wf.jpg" width="900">
 
 # Metamodels
 ## 🎆Configuration File Metamodel
