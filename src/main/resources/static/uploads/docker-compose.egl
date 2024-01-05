@@ -1,0 +1,32 @@
+[%var compose = Compose.all.first();%]
+[%var service = Service.all.first();%]
+[%var port = Port.all.first();%]
+[%var env = Environment.all.first();%]
+[%var vol = Volume.all.first();%]
+version: "3"
+services:
+[%for (s in compose.services){%]
+    [%=s.name%]:
+        image: "[%=s.image%]"
+        container_name: [%=s.container_name%]
+        ports:
+        [%for (pe in s.ports){%]
+         - "[%=pe.host+":"+pe.container%]"
+        [%}%]
+        networks:
+         - [%=s.networks%]
+        environment:
+        [%for (e in s.environment){%]
+         - [%=e.name%+"="+e.value%]
+        [%}%]
+        [%if (s.volumes.size() != 0){%]
+        volumes:
+         - [%=vol.name%+":"+vol.container%]
+        [%}%]
+        [%if (s.command.isDefined() ){%]
+        command: [%=s.command%]
+        [%}%]
+[%}%]
+networks:
+    [%=service.networks%]:
+        drivar: bridge

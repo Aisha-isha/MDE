@@ -1,0 +1,31 @@
+@namespace(
+    uri="maven",
+    prefix="")
+
+package maven;
+
+class ConfigFile {
+    val Docker_values[*] docker_values;
+    val Properties[*] properties;
+}
+
+class Docker_values {
+    attr String[1] entrypoint;
+    attr String[1] image_backend;
+     attr String[1] image_db;
+
+
+}
+class Properties {
+    attr int port;
+    val DataSource[*] datasources;
+}
+
+class DataSource {
+     attr String[1] type;
+     attr String[1] url;
+     attr String[1] port;
+     attr String[1] username;
+     attr String[1] pwd;
+     attr String[1] database;
+}

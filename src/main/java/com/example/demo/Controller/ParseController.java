@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import org.eclipse.epsilon.emc.emf.InMemoryEmfModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
@@ -12,9 +13,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import com.example.demo.service.Model2Model;
+import com.example.demo.service.Model2Text;
 import com.example.demo.service.ParserService;
-
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -23,6 +27,16 @@ import java.util.Arrays;
 @Controller
 public class ParseController {
 
+    @Autowired
+    private Model2Model model2Model;
+    @Autowired
+    private Model2Text model2Text;
+
+    @GetMapping("/uploadFiles")
+    public String parse() {
+        return "index";
+    }
+
     private final ParserService parserService;
 
     @Autowired
@@ -30,14 +44,12 @@ public class ParseController {
         this.parserService = parserService;
     }
 
-    @GetMapping("/uploadFiles")
-    public String parse() {
-        return "index";
-    }
-
     @PostMapping("/uploadFiles")
-    public ResponseEntity<FileSystemResource> uploadFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("numFiles") int numFiles, Model model) {
-        String uploadDir = "src/main/resources/static/uploads"; // Update the uploadDir path
+    public ResponseEntity<FileSystemResource> uploadFiles(
+            @RequestParam("files") MultipartFile[] files,
+            @RequestParam("numFiles") int numFiles,
+            Model model) throws Exception {
+        String uploadDir = "src/main/resources/static/uploads";
 
         try {
             Path uploadPath = Path.of(uploadDir);
@@ -53,7 +65,6 @@ public class ParseController {
                 String fileName = file.getOriginalFilename();
                 Path filePath = uploadPath.resolve(fileName);
 
-                // If a file with the same name already exists, rename the current file
                 int count = 0;
                 while (Files.exists(filePath)) {
                     count++;
@@ -74,24 +85,41 @@ public class ParseController {
                     .filter(file -> !file.isEmpty())
                     .map(file -> uploadDir + "/" + file.getOriginalFilename())
                     .toArray(String[]::new));
-
-            // Process uploaded files with ParserService
-            parserService.parsePropretiesFile();
-            parserService.parseDockerFile(numFiles);
-            parserService.confFile();
-
-            // Generate a downloadable file (replace this with your actual logic)
-            Path resultFilePath = Path.of("src/main/resources/static/uploads/docker-compose.yml");
-           
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "docker-compose.yml");
-
-            return new ResponseEntity<>(new FileSystemResource(resultFilePath), headers, org.springframework.http.HttpStatus.OK);
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("message", "Error uploading files. Please try again.");
+        }
+
+        parserService.parsePropretiesFile();
+        parserService.parseDockerFile(numFiles);
+        parserService.confFile();
+
+        InMemoryEmfModel targetModel = model2Model.model2ModelTransformation("static/uploads/config.flexmi");
+        String generatedConfigFile = model2Text.model2TextTransformer(targetModel);
+
+        String filePath = "src/main/resources/static/uploads/docker-compose.yml";
+
+        try (FileWriter fileWriter = new FileWriter(filePath);
+             PrintWriter printWriter = new PrintWriter(fileWriter)) {
+
+            printWriter.println(generatedConfigFile);
+
+            System.out.println("File docker-compose created successfully at: " + filePath);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error creating docker-compose file.");
+            model.addAttribute("message", "Error creating docker-compose file. Please try again.");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        // Generate a downloadable file
+        Path resultFilePath = Path.of(filePath);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "docker-compose.yml");
+
+        return new ResponseEntity<>(new FileSystemResource(resultFilePath), headers, HttpStatus.OK);
     }
 }
