@@ -17,7 +17,8 @@ Config2Compose, a fairly easy to use web interface where the user can upload the
 
 # Architecture of our Solution
 
-Our solution is a single-page web application developed using the java language with the spring boot framework and simple HTML and CSS for the front-end.
+The application architecture revolves around a user-friendly single-page web interface and a robust backend built with Java and the Spring Boot framework. The front-end, developed using HTML and CSS, offers a seamless experience for users to upload their Maven configuration files, including application.properties and Dockerfiles. On the backend, a Spring Boot application manages user requests and file uploads, employing a model-driven approach to intelligently transform Maven configuration files into corresponding Docker Compose files.
+<img src="imgs/index.png" width="600">
 
 # Metamodels
 ## 🎆Configuration File Metamodel
