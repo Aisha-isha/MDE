@@ -1,3 +1,6 @@
+@namespace(uri="maven", prefix="Source")
+@namespace(uri="compose", prefix="Target")
+
 rule Config2DockerCompose
     transform s : Source!ConfigFile
     to t : Target!Compose {
@@ -5,7 +8,7 @@ rule Config2DockerCompose
         t.version = "3";
 
 
-         // Create network
+// Create network
         var springbootNetwork = new Target!Network;
         springbootNetwork.name = "springboot-net";
         springbootNetwork.drivar = "bridge";

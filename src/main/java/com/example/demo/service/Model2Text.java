@@ -12,11 +12,11 @@ import java.io.File;
 public class Model2Text {
     private String model2Text = FileReader.readFile("static/uploads/docker-compose.egl");
 
-    public String model2Text(InMemoryEmfModel targetModel) throws Exception {
+    public String model2TextTransformer(InMemoryEmfModel targetModel) throws Exception {
         IEglModule module = (IEglModule) new EglTemplateFactoryModuleAdapter();
         System.out.println("the problem is here");
 
-        module.parse(model2Text, new File("static/uploads/program.egl"));
+        module.parse(model2Text, new File("/program.egl"));
         System.out.println("progrma.egl is added");
         if (!module.getParseProblems().isEmpty()) {
             throw new RuntimeException(module.getParseProblems().get(0).toString());

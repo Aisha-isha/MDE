@@ -1,6 +1,10 @@
 package com.example.demo.Controller;
 
+import com.example.demo.service.Model2Model;
+import com.example.demo.service.Model2Text;
+import org.eclipse.epsilon.emc.emf.InMemoryEmfModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +22,11 @@ import java.util.Arrays;
 @Controller
 public class ParseController {
 
+    @Autowired
+    private Model2Model model2Model;
+    @Autowired
+    private Model2Text model2Text;
+
     @GetMapping("/uploadFiles")
     public String parse() {
         return "index";
@@ -31,7 +40,7 @@ public class ParseController {
     
 
     @PostMapping("/uploadFiles")
-    public String uploadFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("numFiles") int numFiles, Model model) {
+    public ResponseEntity<?> uploadFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("numFiles") int numFiles, Model model)throws Exception  {
         String uploadDir = "src/main/resources/static/uploads"; // Update the uploadDir path
 
         try {
@@ -78,6 +87,12 @@ public class ParseController {
         parserService.parseDockerFile(numFiles);
         parserService.confFile();
 
-        return "index";
+        InMemoryEmfModel targetModel = model2Model.model2ModelTransformation("static/uploads/config.flexmi");
+        String generatedConfigFile = model2Text.model2TextTransformer(targetModel);
+        System.out.println("ayaaaat");
+        return ResponseEntity.ok(generatedConfigFile);
+
+
     }
+
 }
