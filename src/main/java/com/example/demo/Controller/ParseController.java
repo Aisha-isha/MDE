@@ -1,6 +1,11 @@
 package com.example.demo.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,20 +23,20 @@ import java.util.Arrays;
 @Controller
 public class ParseController {
 
-    @GetMapping("/uploadFiles")
-    public String parse() {
-        return "index";
-    }
-    
     private final ParserService parserService;
+
     @Autowired
     public ParseController(ParserService parserService) {
         this.parserService = parserService;
     }
-    
+
+    @GetMapping("/uploadFiles")
+    public String parse() {
+        return "index";
+    }
 
     @PostMapping("/uploadFiles")
-    public String uploadFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("numFiles") int numFiles, Model model) {
+    public ResponseEntity<FileSystemResource> uploadFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("numFiles") int numFiles, Model model) {
         String uploadDir = "src/main/resources/static/uploads"; // Update the uploadDir path
 
         try {
@@ -69,15 +74,24 @@ public class ParseController {
                     .filter(file -> !file.isEmpty())
                     .map(file -> uploadDir + "/" + file.getOriginalFilename())
                     .toArray(String[]::new));
+
+            // Process uploaded files with ParserService
+            parserService.parsePropretiesFile();
+            parserService.parseDockerFile(numFiles);
+            parserService.confFile();
+
+            // Generate a downloadable file (replace this with your actual logic)
+            Path resultFilePath = Path.of("src/main/resources/static/uploads/docker-compose.yml");
+           
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", "docker-compose.yml");
+
+            return new ResponseEntity<>(new FileSystemResource(resultFilePath), headers, org.springframework.http.HttpStatus.OK);
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("message", "Error uploading files. Please try again.");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        
-        parserService.parsePropretiesFile();
-        parserService.parseDockerFile(numFiles);
-        parserService.confFile();
-
-        return "index";
     }
 }

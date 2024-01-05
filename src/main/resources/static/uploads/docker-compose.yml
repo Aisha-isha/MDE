@@ -1,0 +1,31 @@
+version: "3"
+services:
+  backend:
+    image: "openjdk:17-jdk-alpine"
+    container_name: backend_container
+    ports:
+      - "8080:8080"
+    networks:
+      - springboot-net
+    environment:
+      - madri=madri
+      - madri2=madri2
+    volumes:
+      - ./path:/another/path
+    command: ["java", "-jar", "/app.jar"]
+
+  database:
+    image: "mysql:8.0"
+    container_name: database_container
+    ports:
+      - "3360:3360"
+    networks:
+      - springboot-net
+    environment:
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+      - MYSQL_DATABASE=mydatabase
+
+networks:
+  springboot-net:
+    driver: bridge
