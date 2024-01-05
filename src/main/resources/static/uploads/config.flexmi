@@ -8,9 +8,9 @@ configFile:
   Properties:
     port: 8080
     Datasource:
-      type: "mysql"
-      url: "jdbc:mysql://database-1.c5xwkykn22e5.eu-north-1.rds.amazonaws.com:3306/readme"
-      port: "3306"
-      database: "readme"
-      username: "admin"
-      password: "Welp1234#"
+      type: "oracle"
+      url: "jdbc:oracle:thin:@DESKTOP-UQA2BF9:1521:XE"
+      port: "1521"
+      database: "1521"
+      username: "sys as sysdba"
+      password: "2001"

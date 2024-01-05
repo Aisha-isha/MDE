@@ -50,10 +50,7 @@ public class ParserService {
             this.usernameValue = usernameValue;
             this.passwordValue = passwordValue;
 
-    	    System.out.println("Port value: " + portValue);
-    	    System.out.println("URL value: " + urlValue);
-    	    System.out.println("Username value: " + usernameValue);
-    	    System.out.println("Password value: " + passwordValue);
+
 
     	    // Extraction d'informations spécifiques de l'URL JDBC
     	    if (urlValue != null) {
@@ -69,11 +66,8 @@ public class ParserService {
     	            this.db=db;
 
     	            // Affichage des valeurs extraites
-    	            System.out.println("Host: " + host);
-    	            System.out.println("Port_db: " + port_db);
-    	            System.out.println("Type_db: " + type_db);
 
-                    System.out.println("Database: " + db);
+
     	        } else if (urlValue.startsWith("jdbc:oracle")) {
     	            String[] parts = urlValue.split(":");
     	            String host = parts[3].substring(1);
@@ -87,11 +81,7 @@ public class ParserService {
     	            
 
     	            // Affichage des valeurs extraites
-    	            System.out.println("Host : " + host);
-    	            System.out.println("Port_db: " + port_db);
-    	            System.out.println("Type_db: " + type_db);
 
-                    System.out.println("Database: " + db);
     	        } else {
     	            System.out.println("Unsupported database URL.");
     	        }
@@ -147,8 +137,7 @@ public class ParserService {
                 this.images = images;
                 this.entrypoints = entrypoints;
 
-                System.out.println("Image for file " + i + ": " + images.get(i));
-                System.out.println("Entrypoint for file " + i + ": " + entrypoints.get(i));
+
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -193,7 +182,7 @@ public class ParserService {
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Error creating 'config.txt' file.");
+            System.err.println("Error creating 'config.flexmi' file.");
         }
     }
     private void deleteFile(String filePath) {
