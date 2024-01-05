@@ -1,11 +1,13 @@
 package com.example.demo.Controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import com.example.demo.service.ParserService;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,10 +18,17 @@ import java.util.Arrays;
 @Controller
 public class ParseController {
 
-    @GetMapping("/parse")
+    @GetMapping("/uploadFiles")
     public String parse() {
         return "index";
     }
+    
+    private final ParserService parserService;
+    @Autowired
+    public ParseController(ParserService parserService) {
+        this.parserService = parserService;
+    }
+    
 
     @PostMapping("/uploadFiles")
     public String uploadFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("numFiles") int numFiles, Model model) {
@@ -64,6 +73,10 @@ public class ParseController {
             e.printStackTrace();
             model.addAttribute("message", "Error uploading files. Please try again.");
         }
+        
+        parserService.parsePropretiesFile();
+        parserService.parseDockerFile(numFiles);
+        parserService.confFile();
 
         return "index";
     }
