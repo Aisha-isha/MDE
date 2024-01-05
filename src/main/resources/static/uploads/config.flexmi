@@ -1,0 +1,16 @@
+?nsuri: maven
+
+configFile:
+  Docker_values:
+    entrypoint: "['java','-jar','/app.jar']"
+    image_backend: "openjdk:17-jdk-alpine"
+    image_db: "mysql:8.0"
+  Properties:
+    port: 8080
+    Datasource:
+      type: "mysql"
+      url: "jdbc:mysql://database-1.c5xwkykn22e5.eu-north-1.rds.amazonaws.com:3306/readme"
+      port: "3306"
+      database: "readme"
+      username: "admin"
+      password: "Welp1234#"

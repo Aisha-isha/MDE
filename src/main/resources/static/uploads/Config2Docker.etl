@@ -1,0 +1,75 @@
+@namespace(uri="maven", prefix="Source")
+@namespace(uri="compose", prefix="Target")
+
+rule Config2DockerCompose
+    transform s : Source!ConfigFile
+    to t : Target!Compose {
+    
+        t.version = "3";
+
+
+        var springbootNetwork = new Target!Network;
+        springbootNetwork.name = "springboot-net";
+        springbootNetwork.drivar = "bridge";
+        t.networks.add(springbootNetwork);
+
+        for (dv in s.docker_values) {
+            var backendService = new Target!Service;
+            backendService.name = "backend";
+            backendService.image = dv.image_backend;
+            backendService.container_name = "backend-container";
+            backendService.networks = "springboot-net";
+            backendService.command=dv.entrypoint.asString();
+
+            var currentProperties = s.properties[s.docker_values.indexOf(dv)];
+
+            backendService.ports.add(createPort(currentProperties.port.toString(), currentProperties.port.toString()));
+
+            backendService.volumes.add(createVolume("./backend-service/target/backend-service.jar", "/app/backend-service.jar"));
+            backendService.working_dir = "/app";
+            backendService.environment.add(createEnvironmentVariable("SPRING_PROFILES_ACTIVE", "production"));
+            var dbService = new Target!Service;
+            dbService.name = "service_" + dv.image_db.replace(':', '_');
+            dbService.image = dv.image_db;
+            dbService.container_name = "database-container";
+            dbService.networks="springboot-net";
+
+            var currentDataSource = currentProperties.datasources[0];
+
+            var dbPort = currentDataSource.port.isEmpty() ? currentProperties.port.toString() : currentDataSource.port.toString();
+            dbService.ports.add(createPort(dbPort, dbPort));
+
+            var dbType = currentDataSource.type;
+            dbService.environment.add(createEnvironmentVariable(dbType + "_URL", currentDataSource.url));
+            dbService.environment.add(createEnvironmentVariable(dbType + "_USERNAME", currentDataSource.username));
+            dbService.environment.add(createEnvironmentVariable(dbType + "_PASSWORD", currentDataSource.pwd));
+            dbService.environment.add(createEnvironmentVariable(dbType + "_DATABASE", currentDataSource.database));
+
+            t.services.add(backendService);
+            t.services.add(dbService);
+        }
+
+
+    }
+
+
+function createPort(host, container) {
+    var port = new Target!Port;
+    port.host = host;
+    port.container = container;
+    return port;
+}
+
+function createVolume(host, container) {
+    var volume = new Target!Volume;
+    volume.name = host;
+    volume.container = container;
+    return volume;
+}
+
+function createEnvironmentVariable(name, value) {
+    var envVar = new Target!Environment;
+    envVar.name = name;
+    envVar.value = value;
+    return envVar;
+}

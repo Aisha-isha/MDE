@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Compose Generator</title>
+    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fc;
+        }
+
+        #page-top {
+            margin: 20px;
+        }
+
+        h1 {
+            color: #4e73df;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="button"],
+        input[type="submit"] {
+            background-color: #4e73df;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #1cc88a;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-5 text-center" style="margin-left: 24%">
+        <h1 class="h3 mb-0 text-gray-800">Insert docker files and application.properties</h1>
+    </div>
+    
+
+    <form id="fileInputForm" enctype="multipart/form-data" action="/uploadFiles" method="post">
+
+        <div class="form-group col-sm-6 mb-3 mb-sm-0 mt-4 text-center" >
+            <input type="number" id="numFiles" name="numFiles" min="2" class="form-control form-control-user"
+                placeholder="Number of files you have" required>
+        </div>
+        <br>
+        <input type="button" value="Configure" class="btn btn-sm btn-primary shadow-sm" style="margin-left: 81%"
+        onclick="addFileInputs()">
+    <br><br>
+
+        <div id="fileInputs">
+            <!-- File input fields will be added here dynamically based on user input -->
+        </div>
+
+        <br>
+
+       
+
+        <div style="margin-left: 63%">
+            <input type="submit" value="Submit" class="btn btn-sm btn-success shadow-sm" style="margin-left: 57%">
+        </div>
+    </form>
+
+    <script>
+        function addFileInputs() {
+            var numFiles = document.getElementById("numFiles").value;
+
+            // Validate if numFiles is a positive integer
+            if (!Number.isInteger(+numFiles) || +numFiles <= 0) {
+                alert("Please enter a valid positive integer for the number of files.");
+                return;
+            }
+
+            // Clear previous file inputs
+            document.getElementById("fileInputs").innerHTML = "";
+
+            // Create file input fields dynamically
+            for (var i = 1; i <= numFiles; i++) {
+                var fileInput = document.createElement("input");
+                fileInput.type = "file";
+                fileInput.name = "files"; // Use a different name for each file input
+                fileInput.className = "form-control form-control-user";
+
+                var br = document.createElement("br");
+
+                // Append file input and line break to the form
+                document.getElementById("fileInputs").appendChild(fileInput);
+                document.getElementById("fileInputs").appendChild(br);
+            }
+        }
+    </script>
+
+</body>
+
+</html>
