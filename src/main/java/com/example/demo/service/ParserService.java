@@ -16,57 +16,15 @@ public class ParserService {
     private String urlValue;
     private String usernameValue;
     private String passwordValue;
+    public String host;
+    public String port_db;
+    public String type_db;
+    public String db;
     private List<String> images;
     private List<String> entrypoints;
 
 
-    public String getPortValue() {
-        return portValue;
-    }
-
-    public void setPortValue(String portValue) {
-        this.portValue = portValue;
-    }
-
-    public String getUrlValue() {
-        return urlValue;
-    }
-
-    public void setUrlValue(String urlValue) {
-        this.urlValue = urlValue;
-    }
-
-    public String getUsernameValue() {
-        return usernameValue;
-    }
-
-    public void setUsernameValue(String usernameValue) {
-        this.usernameValue = usernameValue;
-    }
-
-    public String getPasswordValue() {
-        return passwordValue;
-    }
-
-    public void setPasswordValue(String passwordValue) {
-        this.passwordValue = passwordValue;
-    }
-
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
-    }
-
-    public List<String> getEntryPoints() {
-        return entrypoints;
-    }
-
-    public void setEntryPoints(List<String> entrypoints) {
-        this.entrypoints = entrypoints;
-    }
+    
 
     public void parsePropretiesFile() {
     	
@@ -84,6 +42,10 @@ public class ParserService {
     	    String urlValue = properties.getProperty("spring.datasource.url");
     	    String usernameValue = properties.getProperty("spring.datasource.username");
     	    String passwordValue = properties.getProperty("spring.datasource.password");
+    	    this.portValue = (portValue != null) ? portValue : "8080";
+            this.urlValue = urlValue;
+            this.usernameValue = usernameValue;
+            this.passwordValue = passwordValue;
 
     	    System.out.println("Port value: " + portValue);
     	    System.out.println("URL value: " + urlValue);
@@ -98,21 +60,35 @@ public class ParserService {
     	            String[] subParts = parts[3].split("/");
     	            String port_db = subParts[0];
     	            String type_db = "mysql";
+    	            String db= subParts[1];
+    	            this.type_db = type_db;
+    	            this.port_db = port_db;
+    	            this.db=db;
 
     	            // Affichage des valeurs extraites
     	            System.out.println("Host: " + host);
     	            System.out.println("Port_db: " + port_db);
     	            System.out.println("Type_db: " + type_db);
+
+                    System.out.println("Database: " + db);
     	        } else if (urlValue.startsWith("jdbc:oracle")) {
     	            String[] parts = urlValue.split(":");
     	            String host = parts[3].substring(1);
     	            String port_db = parts[4];
     	            String type_db = "oracle";
+    	            String db=parts[4];
+    	            
+    	            this.db = db;
+    	            this.type_db = type_db;
+    	            this.port_db = port_db;
+    	            
 
     	            // Affichage des valeurs extraites
     	            System.out.println("Host : " + host);
     	            System.out.println("Port_db: " + port_db);
     	            System.out.println("Type_db: " + type_db);
+
+                    System.out.println("Database: " + db);
     	        } else {
     	            System.out.println("Unsupported database URL.");
     	        }
@@ -168,6 +144,8 @@ public class ParserService {
 
                 images.add(image);
                 entrypoints.add(entrypoint);
+                this.images = images;
+                this.entrypoints = entrypoints;
 
                 System.out.println("Image for file " + i + ": " + images.get(i));
                 System.out.println("Entrypoint for file " + i + ": " + entrypoints.get(i));
@@ -179,7 +157,7 @@ public class ParserService {
     }
     public void confFile() {
         
-        String filePath = "src/main/resources/static/uploads/config.txt";
+        String filePath = "src/main/resources/static/uploads/config.flexmi";
         
         try {
             // Create FileWriter and PrintWriter objects
@@ -191,18 +169,20 @@ public class ParserService {
             printWriter.println();
             printWriter.println("configFile:");
             printWriter.println("  Docker_values:");
-            printWriter.println("    entrypoint: ");
-            printWriter.println("    image_backend: ");
+            String originalValue = "[\"java\",\"-jar\",\"/app.jar\"]";
+            String transformedValue = originalValue.replace("\"", "'");
+            printWriter.println("    entrypoint: " +"\"" + transformedValue+"\"");
+            printWriter.println("    image_backend: " +"\"" + images.get(0) + "\"");
             printWriter.println("    image_db: \"mysql:8.0\"");
             printWriter.println("  Properties:");
-            printWriter.println("    port: 8087");
+            printWriter.println("    port: " + portValue);
             printWriter.println("    Datasource:");
-            printWriter.println("      type: \"mysql\"");
-            printWriter.println("      url: \"jgrekgjvrekjgvvfdvfdbgfnjht\"");
-            printWriter.println("      port: \"4040\"");
-            printWriter.println("      database: \"db\"");
-            printWriter.println("      username: \"amila_one\"");
-            printWriter.println("      password: \"Amila_pw\"");
+            printWriter.println("      type: " + "\"" + type_db + "\"");
+            printWriter.println("      url: " +"\"" + urlValue+ "\"");
+            printWriter.println("      port: " + "\""+port_db+"\"");
+            printWriter.println("      database: " +"\""+ db + "\"");
+            printWriter.println("      username: " + "\""+ usernameValue+ "\"");
+            printWriter.println("      password: " + "\""+ passwordValue+"\"");
 
             // Fermez les ressources
             printWriter.close();
